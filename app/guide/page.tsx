@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { SiteNav } from '@/components/site-nav';
-import { SpotlightCard, StarBorder, TrueFocus } from '@/components/effects';
+import { SpotlightCard, StarBorder } from '@/components/effects';
 
 const steps = [
   'Open app on two devices/browser tabs.',
@@ -25,14 +25,7 @@ export default function GuidePage() {
         </div>
 
         <SpotlightCard className="glass-panel mt-8 rounded-2xl border border-border/70 p-6 shadow-xl">
-          <TrueFocus
-            sentence="Quick Guide"
-            separator=" "
-            blurAmount={1.8}
-            borderColor="#60a5fa"
-            glowColor="rgba(96, 165, 250, 0.6)"
-            className="justify-start"
-          />
+          <h1 className="text-4xl font-black tracking-tight">Quick Guide</h1>
           <ol className="mt-5 space-y-3 text-sm">
             {steps.map((step, idx) => (
               <li key={step} className="rounded-lg border border-border/70 bg-background/70 px-4 py-3">

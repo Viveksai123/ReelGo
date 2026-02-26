@@ -143,6 +143,8 @@
 }
 
 .glass-panel {
+  position: relative;
+  z-index: 40;
   background: color-mix(in oklab, var(--card) 88%, transparent);
   backdrop-filter: blur(14px);
 }

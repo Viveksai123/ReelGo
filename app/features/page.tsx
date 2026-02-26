@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { SiteNav } from '@/components/site-nav';
-import { SpotlightCard, StarBorder, TiltedCard, TrueFocus } from '@/components/effects';
+import { SpotlightCard, StarBorder, TiltedCard } from '@/components/effects';
 
 const featureList = [
   'Room-based tracker/follower architecture',
@@ -27,13 +27,7 @@ export default function FeaturesPage() {
 
         <section className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
           <SpotlightCard className="glass-panel rounded-2xl border border-border/70 p-6 shadow-xl">
-            <TrueFocus
-              sentence="Feature Matrix"
-              blurAmount={2}
-              borderColor="#38bdf8"
-              glowColor="rgba(56,189,248,0.6)"
-              className="justify-start"
-            />
+            <h1 className="text-4xl font-black tracking-tight">Feature Matrix</h1>
             <p className="mt-3 text-sm text-muted-foreground">Implemented capabilities for the assignment scope.</p>
             <ul className="mt-6 grid gap-3 sm:grid-cols-2">
               {featureList.map((item) => (

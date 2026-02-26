@@ -25,7 +25,7 @@ export function TrueFocus({
   sentence = 'True Focus',
   separator = ' ',
   manualMode = false,
-  blurAmount = 5,
+  blurAmount = 0,
   borderColor = '#22c55e',
   glowColor = 'rgba(34, 197, 94, 0.55)',
   animationDuration = 0.45,
@@ -74,8 +74,9 @@ export function TrueFocus({
             onMouseEnter={() => manualMode && setCurrentIndex(idx)}
             className="relative cursor-default text-3xl font-black tracking-tight sm:text-5xl"
             style={{
-              filter: active ? 'blur(0px)' : `blur(${blurAmount}px)`,
-              transition: `filter ${animationDuration}s ease`,
+              filter: blurAmount > 0 ? (active ? 'blur(0px)' : `blur(${blurAmount}px)`) : 'none',
+              opacity: active ? 1 : 0.72,
+              transition: `filter ${animationDuration}s ease, opacity ${animationDuration}s ease`,
             }}
           >
             {word}

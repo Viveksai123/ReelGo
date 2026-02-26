@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Moon, Sun, Users } from 'lucide-react';
 import { SiteNav } from '@/components/site-nav';
-import { StarBorder, SpotlightCard, TrueFocus } from '@/components/effects';
+import { StarBorder, SpotlightCard } from '@/components/effects';
 import { useTheme } from '@/components/theme-provider';
 
 export default function Home() {
@@ -33,21 +33,6 @@ export default function Home() {
     <main className="page-shell relative min-h-screen overflow-hidden">
       <div className="page-aurora" />
 
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="map-stage absolute -inset-[12%]">
-          <div className="map-grid map-grid-a" />
-          <div className="map-grid map-grid-b" />
-          <div className="map-roadflow" />
-          <div className="map-roadflow map-roadflow-b" />
-          <div className="map-scan" />
-          <div className="map-glow" />
-        </div>
-        <div className="map-node map-node-a" />
-        <div className="map-node map-node-b" />
-        <div className="map-node map-node-c" />
-        <div className="map-marker map-marker-a" />
-      </div>
-
       <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6">
         <header className="flex items-center justify-between">
           <SiteNav />
@@ -61,13 +46,7 @@ export default function Home() {
         </header>
 
         <section className="mx-auto mt-4 w-full max-w-xl">
-          <TrueFocus
-            sentence="Live Map Sync"
-            blurAmount={2.7}
-            borderColor="#38bdf8"
-            glowColor="rgba(56, 189, 248, 0.65)"
-            className="mb-6"
-          />
+          <h1 className="mb-6 text-center text-4xl font-black tracking-tight sm:text-6xl">Live Map Sync</h1>
 
           <SpotlightCard className="glass-panel">
             <form onSubmit={handleJoinSession} className="rounded-2xl border border-border/70 bg-card/85 p-6 shadow-2xl backdrop-blur-xl">
