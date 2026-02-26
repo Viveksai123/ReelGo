@@ -1,6 +1,10 @@
 const http = require('http');
 const next = require('next');
 const { Server } = require('socket.io');
+const { MongoClient } = require('mongodb');
+const { loadEnvConfig } = require('@next/env');
+
+loadEnvConfig(process.cwd());
 
 const dev = process.env.NODE_ENV !== 'production';
 const host = process.env.HOST || '0.0.0.0';
@@ -13,7 +17,102 @@ const rooms = new Map();
 const lastLocationUpdate = new Map();
 const THROTTLE_INTERVAL = 100;
 
-app.prepare().then(() => {
+let mongoClient = null;
+let roomsCollection = null;
+let eventsCollection = null;
+
+async function connectMongo() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    console.warn('[MongoDB] MONGODB_URI not set. Running without persistence.');
+    return;
+  }
+
+  try {
+    mongoClient = new MongoClient(uri);
+    await mongoClient.connect();
+    const dbName = process.env.MONGODB_DB || 'reelgo';
+    const db = mongoClient.db(dbName);
+    roomsCollection = db.collection('rooms');
+    eventsCollection = db.collection('locationEvents');
+
+    await roomsCollection.createIndex({ roomId: 1 }, { unique: true });
+    await eventsCollection.createIndex({ roomId: 1, timestamp: -1 });
+    console.log(`[MongoDB] Connected (${dbName})`);
+  } catch (error) {
+    console.error('[MongoDB] Connection failed:', error);
+    roomsCollection = null;
+    eventsCollection = null;
+  }
+}
+
+function buildRoomDocument(roomId, room) {
+  return {
+    roomId,
+    tracker: room.tracker
+      ? {
+          id: room.tracker.id,
+          role: room.tracker.role,
+          location: room.tracker.location || null,
+        }
+      : null,
+    trackedIds: Array.from(room.tracked.keys()),
+    trackedCount: room.tracked.size,
+    lastLocation: room.tracker?.location || null,
+    updatedAt: new Date(),
+  };
+}
+
+async function persistRoom(roomId, room) {
+  if (!roomsCollection) return;
+  try {
+    await roomsCollection.updateOne(
+      { roomId },
+      { $set: buildRoomDocument(roomId, room) },
+      { upsert: true }
+    );
+  } catch (error) {
+    console.error('[MongoDB] persistRoom failed:', error);
+  }
+}
+
+async function persistLocationEvent(roomId, trackerId, location) {
+  if (!eventsCollection) return;
+  try {
+    await eventsCollection.insertOne({
+      roomId,
+      trackerId,
+      location,
+      timestamp: location.timestamp,
+      createdAt: new Date(),
+    });
+  } catch (error) {
+    console.error('[MongoDB] persistLocationEvent failed:', error);
+  }
+}
+
+async function readPersistedRoom(roomId) {
+  if (!roomsCollection) return null;
+  try {
+    return await roomsCollection.findOne({ roomId });
+  } catch (error) {
+    console.error('[MongoDB] readPersistedRoom failed:', error);
+    return null;
+  }
+}
+
+async function removePersistedRoom(roomId) {
+  if (!roomsCollection) return;
+  try {
+    await roomsCollection.deleteOne({ roomId });
+  } catch (error) {
+    console.error('[MongoDB] removePersistedRoom failed:', error);
+  }
+}
+
+app.prepare().then(async () => {
+  await connectMongo();
+
   const server = http.createServer((req, res) => handle(req, res));
 
   const io = new Server(server, {
@@ -26,7 +125,7 @@ app.prepare().then(() => {
   });
 
   io.on('connection', (socket) => {
-    socket.on('join-room', (data) => {
+    socket.on('join-room', async (data) => {
       const { roomId, userId, role } = data || {};
       if (!roomId || !userId || !role) return;
 
@@ -60,6 +159,12 @@ app.prepare().then(() => {
       if (!room) return;
 
       if (role === 'tracker') {
+        if (!room.tracker?.location) {
+          const persisted = await readPersistedRoom(roomId);
+          if (persisted?.lastLocation) {
+            room.tracker = { id: userId, role, location: persisted.lastLocation };
+          }
+        }
         room.tracker = { id: userId, role, location: room.tracker?.location };
         io.to(roomId).emit('tracker-joined', { trackerId: userId });
       } else {
@@ -71,6 +176,14 @@ app.prepare().then(() => {
             trackerId: room.tracker.id,
             location: room.tracker.location,
           });
+        } else {
+          const persisted = await readPersistedRoom(roomId);
+          if (persisted?.lastLocation && persisted?.tracker?.id) {
+            socket.emit('location-update', {
+              trackerId: persisted.tracker.id,
+              location: persisted.lastLocation,
+            });
+          }
         }
       }
 
@@ -79,9 +192,11 @@ app.prepare().then(() => {
         tracker: room.tracker,
         trackedCount: room.tracked.size,
       });
+
+      await persistRoom(roomId, room);
     });
 
-    socket.on('broadcast-location', (data) => {
+    socket.on('broadcast-location', async (data) => {
       const roomId = socket.data.roomId;
       if (!roomId || socket.data.role !== 'tracker') return;
 
@@ -121,13 +236,18 @@ app.prepare().then(() => {
         trackerId: socket.data.userId,
         location,
       });
+
+      await Promise.all([
+        persistRoom(roomId, room),
+        persistLocationEvent(roomId, socket.data.userId, location),
+      ]);
     });
 
     socket.on('location-ack', () => {
       // Optional telemetry hook.
     });
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
       const roomId = socket.data.roomId;
       const userId = socket.data.userId;
       const role = socket.data.role;
@@ -145,6 +265,9 @@ app.prepare().then(() => {
 
           if (!room.tracker && room.tracked.size === 0) {
             rooms.delete(roomId);
+            await removePersistedRoom(roomId);
+          } else {
+            await persistRoom(roomId, room);
           }
         }
       }
@@ -157,4 +280,14 @@ app.prepare().then(() => {
     console.log('> Ready on http://localhost:' + port);
     console.log('> Socket.IO listening on /socket.io');
   });
+
+  const shutdown = async () => {
+    if (mongoClient) {
+      await mongoClient.close();
+    }
+    process.exit(0);
+  };
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 });
