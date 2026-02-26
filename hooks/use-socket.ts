@@ -33,14 +33,17 @@ export function useSocket(
   useEffect(() => {
     if (!roomId || !userId) return;
     const socketBaseUrl =
+      process.env.NEXT_PUBLIC_SOCKET_URL ||
       process.env.NEXT_PUBLIC_APP_URL ||
       (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    const socketPath = process.env.NEXT_PUBLIC_SOCKET_PATH || '/socket.io';
 
     const socket = io(socketBaseUrl, {
-      path: '/socket.io',
+      path: socketPath,
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 5,
+      transports: ['websocket'],
     });
 
     socketRef.current = socket;
