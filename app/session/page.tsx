@@ -8,10 +8,11 @@ export const metadata = {
 
 function SessionLoading() {
   return (
-    <div className="w-full h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+    <div className="page-shell flex h-screen w-full items-center justify-center">
+      <div className="page-aurora" />
       <div className="text-center">
-        <div className="w-12 h-12 border-4 border-slate-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-slate-300">Connecting to session...</p>
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-slate-700 border-t-blue-500" />
+        <p className="text-muted-foreground">Connecting to session...</p>
       </div>
     </div>
   );

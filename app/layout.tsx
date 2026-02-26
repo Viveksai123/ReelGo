@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { ThemeProvider } from '@/components/theme-provider'
+import { SplashCursorGate } from '@/components/effects'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -10,26 +11,14 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'Sync Map - Real-time Location Synchronization',
-  description: 'Production-ready real-time location synchronization platform. Share locations instantly with Tracker and Tracked roles.',
+  description: 'Live location sharing platform with instant tracker-to-viewer map synchronization.',
   generator: 'v0.app',
   keywords: ['location', 'sync', 'real-time', 'tracker', 'map', 'websocket'],
   authors: [{ name: 'Sync Map Team' }],
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_GPS_map_marker.svg',
+    apple: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_GPS_map_marker.svg',
+    shortcut: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_GPS_map_marker.svg',
   },
   openGraph: {
     title: 'Sync Map',
@@ -75,6 +64,7 @@ export default function RootLayout({
           }}
         />
         <ThemeProvider>
+          <SplashCursorGate />
           <ErrorBoundary>
             {children}
           </ErrorBoundary>

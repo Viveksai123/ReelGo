@@ -123,3 +123,313 @@
     @apply bg-background text-foreground;
   }
 }
+
+.page-shell {
+  position: relative;
+  background:
+    radial-gradient(circle at 16% 24%, color-mix(in oklab, var(--primary) 26%, transparent), transparent 35%),
+    radial-gradient(circle at 82% 8%, color-mix(in oklab, var(--chart-5) 24%, transparent), transparent 30%),
+    linear-gradient(180deg, color-mix(in oklab, var(--background) 96%, #0b1220) 0%, var(--background) 100%);
+}
+
+.page-aurora {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(70% 50% at 18% 70%, color-mix(in oklab, var(--primary) 20%, transparent), transparent 70%),
+    radial-gradient(60% 45% at 76% 16%, color-mix(in oklab, var(--chart-5) 18%, transparent), transparent 74%);
+}
+
+.glass-panel {
+  background: color-mix(in oklab, var(--card) 88%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.star-movement-bottom {
+  animation: star-movement-bottom linear infinite alternate;
+}
+
+.star-movement-top {
+  animation: star-movement-top linear infinite alternate;
+}
+
+.focus-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid;
+  border-radius: 3px;
+}
+
+.focus-corner-tl {
+  top: -8px;
+  left: -8px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.focus-corner-tr {
+  top: -8px;
+  right: -8px;
+  border-left: 0;
+  border-bottom: 0;
+}
+
+.focus-corner-bl {
+  left: -8px;
+  bottom: -8px;
+  border-right: 0;
+  border-top: 0;
+}
+
+.focus-corner-br {
+  right: -8px;
+  bottom: -8px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.map-stage {
+  filter: saturate(1.15);
+  transform: perspective(1400px) rotateX(62deg) scale(1.15);
+  transform-origin: center 18%;
+  animation: stage-float 14s ease-in-out infinite;
+}
+
+.map-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(59, 130, 246, 0.13) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(59, 130, 246, 0.13) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 50% 30%, #000 50%, transparent 88%);
+}
+
+.map-grid-a {
+  animation: grid-drift-a 26s linear infinite;
+}
+
+.map-grid-b {
+  opacity: 0.55;
+  background-size: 112px 112px;
+  animation: grid-drift-b 34s linear infinite reverse;
+}
+
+.map-roadflow {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(24deg, transparent 36%, rgba(56, 189, 248, 0.4) 49%, transparent 62%),
+    linear-gradient(-12deg, transparent 40%, rgba(16, 185, 129, 0.35) 52%, transparent 64%),
+    linear-gradient(72deg, transparent 42%, rgba(59, 130, 246, 0.27) 50%, transparent 58%);
+  mix-blend-mode: screen;
+  opacity: 0.46;
+  animation: routes-slide 18s ease-in-out infinite;
+  mask-image: radial-gradient(circle at 50% 42%, #000 48%, transparent 86%);
+}
+
+.map-roadflow-b {
+  opacity: 0.28;
+  transform: scale(1.06);
+  animation-duration: 24s;
+  animation-direction: reverse;
+}
+
+.map-scan {
+  position: absolute;
+  inset: -6%;
+  background: conic-gradient(
+    from 0deg at 50% 40%,
+    transparent 0deg,
+    rgba(34, 211, 238, 0.05) 18deg,
+    rgba(34, 211, 238, 0.5) 34deg,
+    rgba(34, 211, 238, 0.06) 52deg,
+    transparent 82deg
+  );
+  mix-blend-mode: screen;
+  animation: sweep 7s linear infinite;
+  mask-image: radial-gradient(circle at 50% 40%, #000 26%, transparent 66%);
+}
+
+.map-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 24% 70%, rgba(56, 189, 248, 0.32), transparent 16%),
+    radial-gradient(circle at 74% 35%, rgba(16, 185, 129, 0.3), transparent 15%),
+    radial-gradient(circle at 55% 55%, rgba(37, 99, 235, 0.2), transparent 22%);
+  animation: glow-shift 9s ease-in-out infinite;
+}
+
+.map-node,
+.map-marker {
+  position: absolute;
+  border-radius: 9999px;
+}
+
+.map-node {
+  width: 12px;
+  height: 12px;
+  background: rgba(56, 189, 248, 0.98);
+  box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.45);
+  animation: node-pulse 2.8s ease-out infinite;
+}
+
+.map-node-a {
+  left: 17%;
+  top: 68%;
+}
+
+.map-node-b {
+  left: 72%;
+  top: 32%;
+  animation-delay: 1s;
+}
+
+.map-node-c {
+  left: 47%;
+  top: 46%;
+  animation-delay: 1.6s;
+}
+
+.map-marker {
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle at 35% 30%, #fff 0 15%, #60a5fa 35%, #2563eb 82%);
+  box-shadow: 0 0 24px rgba(37, 99, 235, 0.62);
+  animation: marker-route 8s cubic-bezier(0.42, 0, 0.2, 1) infinite;
+}
+
+.map-marker-a {
+  left: 40%;
+  top: 58%;
+}
+
+@keyframes star-movement-bottom {
+  0% {
+    transform: translateX(0);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes star-movement-top {
+  0% {
+    transform: translateX(0);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes stage-float {
+  0%,
+  100% {
+    transform: perspective(1400px) rotateX(62deg) scale(1.15) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: perspective(1400px) rotateX(62deg) scale(1.18) translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes grid-drift-a {
+  from {
+    background-position: 0 0, 0 0;
+  }
+  to {
+    background-position: 64px 64px, 64px 64px;
+  }
+}
+
+@keyframes grid-drift-b {
+  from {
+    background-position: 0 0, 0 0;
+  }
+  to {
+    background-position: -112px -112px, -112px -112px;
+  }
+}
+
+@keyframes routes-slide {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.34;
+  }
+  50% {
+    transform: translate3d(-22px, 12px, 0) scale(1.03);
+    opacity: 0.56;
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glow-shift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(8px, -10px, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes node-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.48);
+  }
+  72% {
+    transform: scale(1.12);
+    box-shadow: 0 0 0 32px rgba(56, 189, 248, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+  }
+}
+
+@keyframes marker-route {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  30% {
+    transform: translate3d(26px, -22px, 0);
+  }
+  68% {
+    transform: translate3d(68px, -8px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-stage,
+  .map-grid-a,
+  .map-grid-b,
+  .map-roadflow,
+  .map-scan,
+  .map-glow,
+  .map-node,
+  .map-marker,
+  .star-movement-bottom,
+  .star-movement-top {
+    animation: none !important;
+  }
+}

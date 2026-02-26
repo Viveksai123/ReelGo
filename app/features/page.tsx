@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { SiteNav } from '@/components/site-nav';
+import { SpotlightCard, StarBorder, TiltedCard, TrueFocus } from '@/components/effects';
 
 const featureList = [
   'Room-based tracker/follower architecture',
@@ -12,23 +13,47 @@ const featureList = [
 
 export default function FeaturesPage() {
   return (
-    <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
+    <main className="page-shell min-h-screen">
+      <div className="page-aurora" />
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
         <div className="flex items-center justify-between">
           <SiteNav />
-          <Link href="/" className="rounded-lg border border-border bg-card px-3 py-1.5 text-sm">Open App</Link>
+          <Link href="/">
+            <StarBorder as="span" color="#22d3ee" className="text-sm" speed="5.5s">
+              Open App
+            </StarBorder>
+          </Link>
         </div>
 
-        <section className="mt-8 rounded-2xl border border-border/70 bg-card p-6 shadow-xl">
-          <h1 className="text-3xl font-bold">Feature Matrix</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Implemented capabilities for the assignment scope.</p>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-            {featureList.map((item) => (
-              <li key={item} className="rounded-lg border border-border bg-background px-4 py-3 text-sm">
-                {item}
-              </li>
-            ))}
-          </ul>
+        <section className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+          <SpotlightCard className="glass-panel rounded-2xl border border-border/70 p-6 shadow-xl">
+            <TrueFocus
+              sentence="Feature Matrix"
+              blurAmount={2}
+              borderColor="#38bdf8"
+              glowColor="rgba(56,189,248,0.6)"
+              className="justify-start"
+            />
+            <p className="mt-3 text-sm text-muted-foreground">Implemented capabilities for the assignment scope.</p>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+              {featureList.map((item) => (
+                <li key={item} className="rounded-lg border border-border/70 bg-background/70 px-4 py-3 text-sm">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </SpotlightCard>
+
+          <SpotlightCard className="glass-panel rounded-2xl border border-border/70 p-4 shadow-xl">
+            <TiltedCard
+              imageSrc="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=900&q=80"
+              altText="Map grid and location planning"
+              captionText="Live synchronized map experience"
+              containerHeight="340px"
+              imageHeight="320px"
+              imageWidth="100%"
+            />
+          </SpotlightCard>
         </section>
       </div>
     </main>
